@@ -6,7 +6,7 @@ This is a node.js utility for synchronously running CREATE, UPDATE, or DELETE on
 
 ```
 // Require the module
-var CFNRunner = require('cfnRunner');
+var CFNRunner = require('cfn-runner');
 
 // Instantiate the runner.  The arguments are (region, templateFile, envFile)
 // envFile should be a text file containing:
