@@ -8,7 +8,7 @@ let BbPromise = require('bluebird'),
 
 module.exports = CFNRunner;
 
-function CFNRunner(region, templatePath, envFile) {
+function CFNRunner(templatePath, credentials) {
 
     this.cfnConfig = require('cfn-config');
 
@@ -19,61 +19,24 @@ function CFNRunner(region, templatePath, envFile) {
     };
 
     this.options = {
-        "region": region,
+        "region": credentials.region,
+        "template": templatePath,
         "force": true,
         "update": false
     };
+    var pathTokens = templatePath.split("/");
+    this.options.name = pathTokens[pathTokens.length - 1].split(".")[0];
 
-    var creds = this.setCredentials(envFile);
+    this.awsConfig = credentials;
 
-    this.awsConfig = {
-        region: this.options.region,
-        accessKeyId: creds[0],
-        secretAccessKey: creds[1]
-    };
+    this.cfnConfig.setCredentials(this.awsConfig.accessKeyId, this.awsConfig.secretAccessKey);
 
     this.CloudFormation = BbPromise.promisifyAll(new AWS.CloudFormation(this.awsConfig), {
         suffix: "Promised"
     });
 
-    this.options.template = templatePath;
-
-    var pathTokens = templatePath.split("/");
-    this.options.name = pathTokens[pathTokens.length - 1].split(".")[0];
-
     this.spinner = new Spinner('  ' + chalk.yellow('%s '));
-
-
 }
-
-CFNRunner.prototype.setCredentials = function(envFile) {
-  if(envFile){
-    var fs = require('fs');
-    var credsFileContents = fs.readFileSync(envFile, 'utf8');
-    var lines = credsFileContents.split('\n');
-    var aws_access_key_id;
-    var aws_secret_access_key;
-    lines.forEach(function(cv) {
-        var kvPair = cv.split('=');
-        var key = kvPair[0];
-        var val = kvPair[1];
-        if (key.endsWith('AWS_ACCESS_KEY_ID')) {
-            aws_access_key_id = val;
-        }
-        if (key.endsWith('AWS_SECRET_ACCESS_KEY')) {
-            aws_secret_access_key = val;
-        }
-    });
-  }
-  else {
-    aws_access_key_id = process.env.AWS_ACCESS_KEY_ID;
-    aws_secret_access_key = process.env.AWS_SECRET_ACCESS_KEY;
-  }
-
-    this.cfnConfig.setCredentials(aws_access_key_id, aws_secret_access_key);
-    return [aws_access_key_id, aws_secret_access_key];
-};
-
 
 CFNRunner.prototype.monitorStack = function(options, stackAction, cb) {
 
