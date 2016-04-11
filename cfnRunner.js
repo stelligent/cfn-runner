@@ -21,7 +21,6 @@ function CFNRunner(templatePath, credentials) {
     this.options = {
         "region": credentials.region,
         "template": templatePath,
-        "force": true,
         "update": false
     };
     var pathTokens = templatePath.split("/");
