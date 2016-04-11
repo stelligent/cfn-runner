@@ -8,11 +8,9 @@ This is a node.js utility for synchronously running CREATE, UPDATE, or DELETE on
 // Require the module
 var CFNRunner = require('cfn-runner');
 
-// Instantiate the runner.  The arguments are (region, templateFile, envFile)
-// envFile should be a text file containing:
-//   AWS_ACCESS_KEY_ID=XXXXXXXXXXXXXXXXXXXXX
-//   AWS_SECRET_ACCESS_KEY=XXXXXXXXXXXXXXXXXXXXX
-// If the envFile argument is omitted then the runner will look for the AWS credential variables in the environment (process.env);
+// Instantiate the runner.  The arguments are (region, templateFile, credentials)
+// credentials should be an object like:
+// {'accessKeyId': XXXXXXX, 'secretAccessKey': XXXXXX, 'region': 'us-east-1'}
 var runner = new CFNRunner('us-east-1', '/a/cfn/template.json', '/a/file/containing/aws/credentials.txt');
 
 // Declare a callback function
