@@ -8,10 +8,10 @@ This is a node.js utility for synchronously running CREATE, UPDATE, or DELETE on
 // Require the module
 var CFNRunner = require('cfn-runner');
 
-// Instantiate the runner.  The arguments are (region, templateFile, credentials)
-// credentials should be an object like:
+// Instantiate the runner.  The arguments are (templateFile, config)
+// config should be an object like:
 // {'accessKeyId': XXXXXXX, 'secretAccessKey': XXXXXX, 'region': 'us-east-1'}
-var runner = new CFNRunner('us-east-1', '/a/cfn/template.json', '/a/file/containing/aws/credentials.txt');
+var runner = new CFNRunner('/a/cfn/template.json', '/a/file/containing/aws/config.json');
 
 // Declare a callback function
 var callback = function(err) {

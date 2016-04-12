@@ -8,7 +8,7 @@ let BbPromise = require('bluebird'),
 
 module.exports = CFNRunner;
 
-function CFNRunner(templatePath, credentials) {
+function CFNRunner(templatePath, config) {
 
     this.cfnConfig = require('cfn-config');
 
@@ -19,14 +19,19 @@ function CFNRunner(templatePath, credentials) {
     };
 
     this.options = {
-        "region": credentials.region,
+        "region": config.region,
         "template": templatePath,
-        "update": false
+        "name": config.name,
+        "update": false,
+        "config": "./awsConfig.json",
+        "defaults": config.defaults
     };
     var pathTokens = templatePath.split("/");
     this.options.name = pathTokens[pathTokens.length - 1].split(".")[0];
 
-    this.awsConfig = credentials;
+    this.awsConfig = {"region": config.region, "accessKeyId": config.accessKeyId, "secretAccessKey": config.secretAccessKey};
+
+    console.log(this.awsConfig);
 
     this.cfnConfig.setCredentials(this.awsConfig.accessKeyId, this.awsConfig.secretAccessKey);
 
