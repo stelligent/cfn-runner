@@ -31,8 +31,6 @@ function CFNRunner(templatePath, config) {
 
     this.awsConfig = {"region": config.region, "accessKeyId": config.accessKeyId, "secretAccessKey": config.secretAccessKey};
 
-    console.log(this.awsConfig);
-
     this.cfnConfig.setCredentials(this.awsConfig.accessKeyId, this.awsConfig.secretAccessKey);
 
     this.CloudFormation = BbPromise.promisifyAll(new AWS.CloudFormation(this.awsConfig), {
