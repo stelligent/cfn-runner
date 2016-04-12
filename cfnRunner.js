@@ -8,7 +8,18 @@ let BbPromise = require('bluebird'),
 
 module.exports = CFNRunner;
 
-function CFNRunner(templatePath, config) {
+// `options` object should include:
+// - template: Required. Path to the Cloudformation template
+// - region: The AWS region to deploy into
+// - name: Required. Name of the Cloudformation stack
+// - force: Don't prompt for params if possible
+// - creds: An object containing accessKeyId and secretAccessKey
+// - config: Optional. Path to a configuration file to use
+// - update: Defaults to false. Reads existing stack parameters.
+// - defaults, choices, messages, filters: Optional. Any of these properties can be
+//   set to an object where the keys are Cloudformation parameter names, and the
+//   values are as described by https://github.com/SBoudrias/Inquirer.js#question
+function CFNRunner(options) {
 
     this.cfnConfig = require('cfn-config');
 
@@ -18,18 +29,8 @@ function CFNRunner(templatePath, config) {
         return '  | ';
     };
 
-    this.options = {
-        "region": config.region,
-        "template": templatePath,
-        "name": config.name,
-        "update": false,
-        "config": "./awsConfig.json",
-        "defaults": config.defaults
-    };
-    var pathTokens = templatePath.split("/");
-    this.options.name = pathTokens[pathTokens.length - 1].split(".")[0];
-
-    this.awsConfig = {"region": config.region, "accessKeyId": config.accessKeyId, "secretAccessKey": config.secretAccessKey};
+    this.options = options;
+    this.awsConfig = options.creds;
 
     this.cfnConfig.setCredentials(this.awsConfig.accessKeyId, this.awsConfig.secretAccessKey);
 
