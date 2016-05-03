@@ -31,6 +31,7 @@ function CFNRunner(options) {
 
     this.options = options;
     this.awsConfig = options.creds;
+    this.awsConfig.region = options.region;
 
     this.cfnConfig.setCredentials(this.awsConfig.accessKeyId, this.awsConfig.secretAccessKey);
 
