@@ -119,6 +119,7 @@ CFNRunner.prototype.monitorStack = function(options, stackAction, cb) {
                     }
 
                 });
+                _this.spinner.stop()
             } else {
                 _this.spinner.stop();
                 cb();
