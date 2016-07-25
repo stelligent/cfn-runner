@@ -140,7 +140,7 @@ CFNRunner.prototype.createStack = function(cb) {
             _this.monitorStack(_this.options, "CREATE", function(err) {
 
                 //delete any orphan buckets related to this stack, if they're empty
-                _this.deleteBuckets(_this.options.name);
+                //_this.deleteBuckets(_this.options.name);
                 cb(err);
 
             });
