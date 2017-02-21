@@ -2,6 +2,7 @@
 
 let BbPromise = require('bluebird'),
     AWS = require('aws-sdk'),
+    httpsProxyAgent  = require('https-proxy-agent'),
     chalk = require('chalk'),
     readline = require('readline'),
     Spinner = require('cli-spinner').Spinner;
@@ -33,6 +34,16 @@ function CFNRunner(options) {
     this.awsConfig = options.creds;
     this.awsConfig.region = options.region;
 
+    let proxy = process.env.proxy || process.env.HTTP_PROXY || process.env.http_proxy || process.env.HTTPS_PROXY || process.env.https_proxy;
+    if (proxy) {
+        let proxyOptions;
+        proxyOptions = url.parse(proxy);
+        proxyOptions.secureEndpoint = true;
+        AWS.config.httpOptions.agent = new httpsProxyAgent(proxyOptions);
+
+        //this trickiness appears to successfully subvert the AWS service object used by cfn-config to include the proxy
+        cfnConfig.AWS = AWS
+    }
 
     if(this.awsConfig.sessionToken) {
         let noBucket = null;
