@@ -33,7 +33,18 @@ function CFNRunner(options) {
     this.awsConfig = options.creds;
     this.awsConfig.region = options.region;
 
-    this.cfnConfig.setCredentials(this.awsConfig.accessKeyId, this.awsConfig.secretAccessKey);
+
+    if(this.awsConfig.sessionToken) {
+        let noBucket = null;
+        this.cfnConfig.setCredentials(this.awsConfig.accessKeyId,
+                                      this.awsConfig.secretAccessKey,
+                                      noBucket,
+                                      this.awsConfig.sessionToken);
+    }
+    else {
+        this.cfnConfig.setCredentials(this.awsConfig.accessKeyId,
+                                      this.awsConfig.secretAccessKey);
+    }
 
     this.CloudFormation = BbPromise.promisifyAll(new AWS.CloudFormation(this.awsConfig), {
         suffix: "Promised"
